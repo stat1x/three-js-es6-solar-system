@@ -32,8 +32,8 @@ class System {
         this.scene.add(light);
     }
 
-    addPlanet(distanceFromSun, orbitTime, rotationTime, radius, texturePath) {
-        let p = new Planet(distanceFromSun, orbitTime, rotationTime, radius, texturePath, this.star.position);
+    addPlanet(name, distanceFromSun, orbitTime, rotationTime, radius, texturePath) {
+        let p = new Planet(name, distanceFromSun, orbitTime, rotationTime, radius, texturePath, this.star.position);
         this.planets.push(p);
         this.scene.add(p.mesh);
         this.scene.add(p.orbit);
@@ -68,6 +68,19 @@ class System {
         }
     }
 
+    getPlanetNames() {
+        let names = {};
+        for (let i = 0; i < this.planets.length; i++) {
+            names[this.planets[i].name] = i;
+        }
+
+        return names;
+    }
+
+    getPlanetPosition(planetIndex) {
+        return this.planets[planetIndex].getPosition();
+    }
+
     updateOrbits(show) {
         for (let i = 0; i < this.planets.length; i++) {
             this.planets[i].updateOrbit(show);
@@ -79,7 +92,6 @@ class System {
             this.planets[i].update(d, rotationSpeed, orbitSpeed);
         }
     }
-
 }
 
 export default System;

@@ -7,7 +7,7 @@ import View from "./View";
 class Controller {
 
     constructor() {
-        this.graphics = null;
+        this.view = null;
         this.gui = null;
         this.clock = new Clock();
         this.DEBUG = true;
@@ -51,25 +51,31 @@ class Controller {
 
     startGUI() {
         this.gui = new dat.GUI();
-        let displayOrbitsFolder = this.gui.addFolder('Afficher l\'orbite des planètes');
-        displayOrbitsFolder.add(this.graphics, 'showOrbits', true);
-        let rotationSpeedFolder = this.gui.addFolder('Vitesse de rotation des planètes');
-        rotationSpeedFolder.add(this.graphics, 'rotationSpeed', 1, 10);
-        let orbitSpeedFolder = this.gui.addFolder('Vitesse de l\'orbite des planètes');
-        orbitSpeedFolder.add(this.graphics, 'orbitSpeed', 1, 10);
-        let pauseFolder = this.gui.addFolder('Pause');
-        pauseFolder.add(this.graphics, 'pause', false);
+
+        let controlFolder = this.gui.addFolder('Camera');
+        controlFolder.add(this.view.controls, 'movementSpeed', 0.001, 0.5);
+        controlFolder.add(this.view.controls, 'rollSpeed', 0.001, 0.5);
+        controlFolder.open();
+
+        let planetFolder = this.gui.addFolder('Planet');
+        planetFolder.add(this.view, 'selectedPlanet', this.view.solarSystem.getPlanetNames());
+        planetFolder.add(this.view, 'navigateToSelectedPlanet');
+
+        this.gui.add(this.view, 'showOrbits', true);
+        this.gui.add(this.view, 'rotationSpeed', 1, 20);
+        this.gui.add(this.view, 'orbitSpeed', 1, 100);
+        this.gui.add(this.view, 'pause', false);
     }
 
     startWebGL() {
-        this.graphics = new View(this.SIZE.w, this.SIZE.h);
-        document.body.appendChild(this.graphics.renderer.domElement);
+        this.view = new View(this.SIZE.w, this.SIZE.h);
+        document.body.appendChild(this.view.renderer.domElement);
     }
 
     update() {
         this.stats.begin();
         let d = this.clock.getDelta();
-        this.graphics.update(d);
+        this.view.update(d);
         this.stats.end();
         raf(this.update);
     }
@@ -78,7 +84,7 @@ class Controller {
         let key = e.which || e.keyCode;
         switch (key) {
             case 80:
-                this.graphics.pause = !this.graphics.pause;
+                this.view.pause = !this.view.pause;
                 break;
         }
     }
@@ -91,7 +97,7 @@ class Controller {
             h2: window.innerHeight / 2
         };
 
-        this.graphics.onResize();
+        this.view.onResize();
     }
 }
 

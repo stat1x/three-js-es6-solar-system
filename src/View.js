@@ -1,13 +1,7 @@
 import System from "./Model/System";
 import SkyBox from "./Model/SkyBox";
 import FlyControls from "./Utility/FlyControls";
-import {
-    Scene,
-    PerspectiveCamera,
-    Vector3,
-    WebGLRenderer,
-    AmbientLight
-} from "three";
+import {Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight, Quaternion} from "three";
 
 class View {
     constructor(w, h) {
@@ -20,6 +14,7 @@ class View {
         this.scene = null;
         this.solarSystem = null;
         this.skybox = null;
+        this.selectedPlanet = 0;
         this.createScene();
         this.createRenderer(w, h);
         this.createControls();
@@ -43,7 +38,7 @@ class View {
 
     createControls() {
         this.controls = new FlyControls(this.camera, this.renderer.domElement);
-        this.controls.movementSpeed = 0.1;
+        this.controls.movementSpeed = 0.002;
         this.controls.rollSpeed = 0.0025;
         this.controls.autoForward = false;
         this.controls.dragToLook = false;
@@ -54,21 +49,20 @@ class View {
         this.scene.add(this.skybox.mesh);
         this.initSystems();
         this.initLights();
-        this.scene.add(this.spaceShip);
     }
 
     initSystems() {
         this.solarSystem = new System(this.scene);
         this.solarSystem.addStar(0, 0, 0);
-        this.solarSystem.addPlanet(57910000, 88, 58.6, 2440, 'images/planets/mercury.jpg'); // mercury
-        this.solarSystem.addPlanet(108200000, 224.65, 243, 6052, 'images/planets/venus.jpg'); // venus
-        this.solarSystem.addPlanet(149600000, 365, 1, 6371, 'images/planets/earth.jpg'); // earth
-        this.solarSystem.addPlanet(227939100, 686, 1.03, 3389, 'images/planets/mars.jpg'); // mars
-        this.solarSystem.addPlanet(778500000, 4332, 0.4139, 69911, 'images/planets/jupiter.jpg'); // jupiter
-        this.solarSystem.addPlanet(1433000000, 10759, 0.44375, 58232, 'images/planets/saturn.jpg'); // saturn
-        this.solarSystem.addPlanet(2877000000, 30685, 0.718056, 25362, 'images/planets/uranus.jpg'); // uranus
-        this.solarSystem.addPlanet(4503000000, 60188, 0.6713, 24622, 'images/planets/neptune.jpg'); // neptune
-        this.solarSystem.addPlanet(5906380000, 90616, 6.39, 1137, 'images/planets/pluto.jpg'); // pluto
+        this.solarSystem.addPlanet("mercury", 57910000, 88, 58.6, 2440, 'images/planets/mercury.jpg'); // mercury
+        this.solarSystem.addPlanet("venus", 108200000, -224.65, 243, 6052, 'images/planets/venus.jpg'); // venus
+        this.solarSystem.addPlanet("earth", 149600000, 365, 1, 6371, 'images/planets/earth.jpg'); // earth
+        this.solarSystem.addPlanet("mars", 227939100, -686, 1.03, 3389, 'images/planets/mars.jpg'); // mars
+        this.solarSystem.addPlanet("jupiter", 778500000, 4332, 0.4139, 69911, 'images/planets/jupiter.jpg'); // jupiter
+        this.solarSystem.addPlanet("saturn", 1433000000, 10759, 0.44375, 58232, 'images/planets/saturn.jpg'); // saturn
+        this.solarSystem.addPlanet("uranus", 2877000000, 30685, 0.718056, 25362, 'images/planets/uranus.jpg'); // uranus
+        this.solarSystem.addPlanet("neptune", 4503000000, 60188, 0.6713, 24622, 'images/planets/neptune.jpg'); // neptune
+        this.solarSystem.addPlanet("pluto", 5906380000, -7623, 6.39, 24622, 'images/planets/pluto.jpg'); // pluto
         this.solarSystem.addAsteroidBelt(3, 4, 30000000);
 
         // this.solarSystem2 = new System(this.scene);
@@ -81,13 +75,18 @@ class View {
         // this.solarSystem2.addAsteroidBelt(1, 2, 30000000);
     }
 
+    navigateToSelectedPlanet() {
+        // @todo move camera smoothly to the selected planet
+        this.camera.lookAt(this.solarSystem.getPlanetPosition(this.selectedPlanet));
+    }
+
+
+
     update(d) {
         if (!this.pause) {
             this.solarSystem.update(d, this.rotationSpeed, this.orbitSpeed);
-            // this.solarSystem2.update(d, this.rotationSpeed, this.orbitSpeed);
         }
         this.solarSystem.updateOrbits(this.showOrbits);
-        // this.solarSystem2.updateOrbits(this.showOrbits);
         this.renderer.render(this.scene, this.camera);
         this.controls.update(d);
     }
