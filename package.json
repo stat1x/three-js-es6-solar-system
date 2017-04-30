@@ -22,7 +22,9 @@
     "stats-js": "^1.0.0-alpha1",
     "three": "^0.83.0",
     "three-fly-controls": "^1.1.0",
-    "three-skybox": "^0.0.2"
+    "three-loaders-collada": "^1.0.1",
+    "three-skybox": "^0.0.2",
+    "threejs-es6-flycontrols": "^1.0.1"
   },
   "devDependencies": {
     "@superguigui/wagner": "^0.1.5",

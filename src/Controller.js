@@ -1,15 +1,15 @@
 import dat from "dat-gui";
 import raf from "raf";
 import Stats from "stats-js";
-import * as THREE from "three";
-import Graphics from "./Graphics";
+import {Clock} from "three";
+import View from "./View";
 
-class Simulator {
+class Controller {
 
     constructor() {
         this.graphics = null;
         this.gui = null;
-        this.clock = new THREE.Clock();
+        this.clock = new Clock();
         this.DEBUG = true;
         this.SIZE = {
             w: window.innerWidth,
@@ -62,7 +62,7 @@ class Simulator {
     }
 
     startWebGL() {
-        this.graphics = new Graphics(this.SIZE.w, this.SIZE.h);
+        this.graphics = new View(this.SIZE.w, this.SIZE.h);
         document.body.appendChild(this.graphics.renderer.domElement);
     }
 
@@ -95,4 +95,4 @@ class Simulator {
     }
 }
 
-export default Simulator;
+export default Controller;

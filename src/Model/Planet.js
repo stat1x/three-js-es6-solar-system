@@ -1,29 +1,37 @@
 import * as Constants from "../Constants";
+import {
+    TextureLoader,
+    SphereGeometry,
+    MeshLambertMaterial,
+    LineBasicMaterial,
+    CircleGeometry,
+    Line,
+    Mesh
+} from "three";
 
 class Planet {
-    constructor(distanceFromSun, orbitTime, rotationTime, radius, texturePath) {
+    constructor(distanceFromSun, orbitTime, rotationTime, radius, texturePath, position) {
         this.distanceFromSun = distanceFromSun;
         this.orbitTime = orbitTime;
         this.rotationTime = rotationTime;
         this.radius = radius;
         this.texturePath = texturePath;
         this.theta = 0;
+        this.systemCenter = position;
 
-        let loader = new THREE.TextureLoader();
-        let geometry = new THREE.SphereGeometry(this.radius * Constants.PLANET_SIZE_SCALE, 32, 32);
+        let loader = new TextureLoader();
+        let geometry = new SphereGeometry(this.radius * Constants.PLANET_SIZE_SCALE, 128, 128);
         let texture = loader.load(this.texturePath);
-        let material = new THREE.MeshLambertMaterial({map: texture});
-        this.mesh = new THREE.Mesh(geometry, material);
-        this.mesh.position.set(this.distanceFromSun * Constants.DISTANCE_SCALE, 0, 0);
-        this.mesh.rotation.z = Math.PI / 4;
+        let material = new MeshLambertMaterial({map: texture});
+        this.mesh = new Mesh(geometry, material);
+        this.mesh.position.set((position.x + this.distanceFromSun) * Constants.DISTANCE_SCALE, position.y, position.z);
 
-        let segments = 128;
-        let lineMaterial = new THREE.LineBasicMaterial({color: 0xffffff});
-        let orbitGeometry = new THREE.CircleGeometry(this.distanceFromSun * Constants.DISTANCE_SCALE, segments);
+        let lineMaterial = new LineBasicMaterial({color: 0xffffff});
+        let orbitGeometry = new CircleGeometry((position.x + this.distanceFromSun) * Constants.DISTANCE_SCALE, 64);
         orbitGeometry.vertices.shift();
 
-        this.orbit = new THREE.Line(orbitGeometry, lineMaterial);
-        this.orbit.position.x = 0;
+        this.orbit = new Line(orbitGeometry, lineMaterial);
+        this.orbit.position.set(position.x, position.y, position.z);
     }
 
     getPosition() {
@@ -32,7 +40,6 @@ class Planet {
 
     updateOrbit(display) {
         this.orbit.visible = display;
-        // console.log(display);
     }
 
     update(d, rotationSpeed, orbitSpeed) {
@@ -42,12 +49,8 @@ class Planet {
         if(this.theta == 360) {
             this.theta = 0;
         }
-        this.mesh.position.x = this.distanceFromSun * Constants.DISTANCE_SCALE * Math.cos(this.theta);
-        this.mesh.position.y = this.distanceFromSun * Constants.DISTANCE_SCALE * Math.sin(this.theta);
-        // this.mesh.translateX(this.distanceFromSun * Constants.DISTANCE_SCALE * Math.sin(theta) * 0.01);
-        // this.mesh.translateY(this.distanceFromSun * Constants.DISTANCE_SCALE * Math.cos(theta) * 0.01);
-        // let v = new THREE.Vector3(this.distanceFromSun * Constants.DISTANCE_SCALE * Math.cos(theta), this.distanceFromSun * Constants.DISTANCE_SCALE * Math.sin(theta), 0)
-        // this.mesh.translateOnAxis(v, 50)
+        this.mesh.position.x = (this.systemCenter.x + this.distanceFromSun) * Constants.DISTANCE_SCALE * Math.cos(this.theta);
+        this.mesh.position.y = (this.systemCenter.y + this.distanceFromSun) * Constants.DISTANCE_SCALE * Math.sin(this.theta);
     }
 
 }

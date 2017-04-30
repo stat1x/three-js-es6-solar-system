@@ -2779,6 +2779,10 @@ three-fly-controls@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/three-fly-controls/-/three-fly-controls-1.1.0.tgz#8ea796da94ac017f5ea44ec015b1db5e19a42bd0"
 
+three-loaders-collada@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/three-loaders-collada/-/three-loaders-collada-1.0.1.tgz#d25077afc46bcd099ba6263473b56a5a5f1d2aa2"
+
 three-skybox@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/three-skybox/-/three-skybox-0.0.2.tgz#46f38442cc824ab7ce88927a1a71a57f7a54db3d"

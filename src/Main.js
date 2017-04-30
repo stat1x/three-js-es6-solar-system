@@ -1,7 +1,7 @@
 import domready from "domready";
-import Simulator from "./Simulator";
+import Controller from "./Controller";
 
 domready(() => {
-    let simulator = new Simulator();
-    simulator.start();
+    let ctrl = new Controller();
+    ctrl.start();
 });
